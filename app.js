@@ -1,19 +1,22 @@
 console.log("Let's get this party started!");
 
-
+$("#get-gif").on("click", getAGif);
+$("#remove-gifs").on("click", removeAllGifs);
 
 async function getAGif() {
-    let response = await axios.get("https://api.giphy.com/v1/gifs/search?q=hilarious&api_key=MhAodEJIJxQMxW9XqxKjyXfNYdLoOIym");
-    console.log("got", response.data.data[0]);
+    const query = document.querySelector("#search").value;
+    const response = await axios.get(`https://api.giphy.com/v1/gifs/search?q=${query}&api_key=MhAodEJIJxQMxW9XqxKjyXfNYdLoOIym`);
 
-    let $newImage = ("<img>", {
-        src: response.data.data[0].images.original.url
-    })
-    let $testDiv = ("<div>")
+    if(response.data.data.length > 0){
+        const rand = Math.floor(Math.random() * response.data.data.length);
+        const newGif = document.createElement("img");
 
-    $("#gifs").append($newImage);
-    $("#gifs").append($testDiv);
+        newGif.src = response.data.data[rand].images.original.url;
+        $("#gifs").append(newGif);
+    }
+}
 
-    return response.data.data[0];
-  }
+function removeAllGifs() {
+    $("#gifs").empty();
+}
 
